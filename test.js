@@ -2,7 +2,6 @@ let Compiler = require('./compiler.js');
 
 
 let testcase = [
-  '()',
   '(add)',
   '(add 1)',
   '(add 1 2)',
@@ -14,8 +13,11 @@ let testcase = [
 ];
 
 let compiler = new Compiler();
-for(tc in testcase) {
-  let tokens = compiler.tokenizer('(a 2)');
+for(tc of testcase) {
+  console.log('\nSource code:\n' + tc);
+  let tokens = compiler.tokenizer(tc);
   let ats = compiler.parser(tokens);
-  console.log(JSON.stringify(ats, null, '  '));
+  let code = compiler.codegenerator(ats);
+  // console.log(JSON.stringify(ats, null, '  '));
+  console.log('Target code:\n' + code);
 }

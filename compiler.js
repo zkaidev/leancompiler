@@ -1,5 +1,5 @@
 /*
- * (add 1 (sub 2 3))
+ * (add 1 (sub 2 3)) to add(1, sub(2, 3));
  */
 class Compiler {
 
@@ -146,6 +146,44 @@ class Compiler {
     return root;
   }
 
+
+  /*
+   * code generator
+   */
+  codegenerator(ast) {
+    function walk(pn) {
+      let code = '';
+
+      if(pn.type === 'program') {
+        for(let n of pn.body) {
+          code = code + walk(n) + ';\n';
+        }
+        return code;
+      }
+
+      if(pn.type === 'expr') {
+        code = code + pn.value + '(';
+        for(let p of pn.params) {
+          code = code + walk(p) + ', ';
+        }
+
+        code = code.slice(0, code.length-2) + ')';
+        return code;
+      }
+
+      if(pn.type === 'number') {
+        code = pn.value;
+        return code;
+      }
+
+      if(pn.type === 'string') {
+        code = pn.value;
+        return code;
+      }
+    }
+
+    return walk(ast);
+  }
 }
 
 module.exports = Compiler;
